@@ -1,11 +1,6 @@
 const inquirer = require("inquirer");
 // Import and require mysql2
 const mysql = require("mysql2");
-// Import and require express
-const express = require("express");
-// Express middleware
-const PORT = process.env.PORT || 3001;
-const app = express();
 
 // Connect to database
 //TODO - hide credentials
@@ -21,8 +16,50 @@ const db = mysql.createConnection(
   console.log(`Connected to the employer_db database.`)
 );
 
+//connection for async-await type functions
+const connection = mysql
+  .createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "employer_db",
+  })
+  .promise();
+
+//async/await choices for 'what is the new ee's role?'
+const choiceRoles = async () => {
+  const roleQuery = `SELECT id AS value, title AS name FROM role;`;
+  const roles = await connection.query(roleQuery);
+  return roles[0];
+};
+
+//async/await choices for 'what dept does role belong to'
+const choiceDepartments = async () => {
+  const choiceDepartmentsQuery = `SELECT id AS value, name AS name FROM department;`;
+  const dpts = await connection.query(choiceDepartmentsQuery);
+  // mgrs[0].push({ value: null, name: 'None'});
+  console.log(dpts[0]);
+  return dpts[0];
+};
+//async/await choices for 'who does the new ee report to?'
+const choiceManagers = async () => {
+  const mgrQuery = `SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee;`;
+  const mgrs = await connection.query(mgrQuery);
+  mgrs[0].push({ value: null, name: 'None'});
+  console.log(mgrs[0]);
+  return mgrs[0];
+};
+
+const choiceEEs = async () => {
+  const eeQuery = `SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee;`;
+  const ees = await connection.query(eeQuery);
+  console.log(ees[0]);
+  return ees[0];
+}
+
 function init() {
   inquirer
+    //Display root options list
     .prompt([
       {
         type: "list",
@@ -40,6 +77,7 @@ function init() {
       },
     ])
     .then((response) => {
+      //switch statement to route each option
       switch (response.choice) {
         case "View all departments":
           db.query(
@@ -48,10 +86,11 @@ function init() {
           FROM department`,
             function (err, result, fields) {
               if (err) throw err;
+              console.log(`\n\r`);
               console.table(result);
+              init();
             }
           );
-
           break;
         case "View all roles":
           db.query(
@@ -62,6 +101,7 @@ function init() {
             function (err, result, fields) {
               if (err) throw err;
               console.table(result);
+              init();
             }
           );
 
@@ -77,98 +117,141 @@ function init() {
             function (err, result, fields) {
               if (err) throw err;
               console.table(result);
+              init();
             }
           );
-
           break;
         case "Add a department":
-          inquirer.prompt([
-            {
-              type: "input",
-              message: "\n\r What is the name of the new department?",
-              name: "newDepartment",
-            }
-            ]).then((response) => {
-                db.query(
+          inquirer
+            .prompt([
+              {
+                type: "input",
+                message: "\n\r What is the name of the new department?",
+                name: "newDepartment",
+              },
+            ])
+            .then((response) => {
+              db.query(
                 `
-              INSERT INTO department(name) VALUES (?)`, response.newDepartment,
+              INSERT INTO department(name) VALUES (?)`,
+                response.newDepartment,
                 function (err, result, fields) {
                   if (err) throw err;
                   console.table("Department Added");
+                  init();
                 }
-              )}
-              )
-          
+              );
+            });
           break;
         case "Add a role":
-            inquirer.prompt([
-                {
-                  type: "input",
-                  message: "\n\r What is the name of the new role?",
-                  name: "newRole",
+          inquirer
+            .prompt([
+              {
+                type: "input",
+                message: "\n\r What is the name of the new role?",
+                name: "newRole",
+              },
+              {
+                type: "input",
+                message: "\n\r Enter a salary for the new role",
+                name: "newRoleSalary",
+              },
+              {
+                type: "list",
+                message: "\n\r Enter Dept role belongs to",
+                name: "newRoleDept",
+                choices: async () => await choiceDepartments(),
+              },
+            ])
+            .then((response) => {
+              db.query(
+                `
+                  INSERT INTO role (title, salary, department_id) VALUES (?,?,?)`,
+                [response.newRole,response.newRoleSalary,response.newRoleDept],
+                function (err, result, fields) {
+                  if (err) throw err;
+                  console.table("Role Added");
+                  init();
                 }
-                ]).then((response) => {
-                    db.query(
-                    `
-                  INSERT INTO role (name) VALUES (?)`, response.newRole,
-                    function (err, result, fields) {
-                      if (err) throw err;
-                      console.table("Role Added");
-                    }
-                  )}
-                  )
-
+              );
+            });
           break;
         case "Add an employee":
             inquirer.prompt([
-                {
-                  type: "input",
-                  message: "\n\r What is the ee's first name?",
-                  name: "eFName",
-                },
-                {
-                  type: "input",
-                  message: "\n\r What is the ee's last name?",
-                  name: "eLName",
-                },
-                {
-                    type: "input",
-                    message: "\n\r What is the ee's role?",
-                    name: "eRole",
-                    choices: [
-                        "View all departments",
-                        "View all roles",
-                        "View all employees",
-                        "Add a department",
-                        "Add a role",
-                        "Add an employee",
-                        "Update an employee role",
-                      ],
-                  },
-                  {
-                    type: "input",
-                    message: "\n\r Who is the ee's manager?",
-                    name: "eManager",
-                  },
-                ]).then((response) => {
-                    db.query(
-                    `
-                  INSERT INTO employee (first_name, last_name) VALUES (?)`, `${response.eFName},${response.eLName}`,
-                    function (err, result, fields) {
-                      if (err) throw err;
-                      console.table("Employee Added");
-                    }
-                  )}
-                  )
+              {
+                type: "input",
+                message: "\n\r What is the ee's first name?",
+                name: "eFName",
+              },
+              {
+                type: "input",
+                message: "\n\r What is the ee's last name?",
+                name: "eLName",
+              },
+              {
+                type: "list",
+                message: "Choose your ee's role",
+                name: "roleID",
+                choices: async () => await choiceRoles(),
+              },
+              {
+                type: "list",
+                message: "Choose your ee's manager",
+                name: "mgrID",
+                choices: async () => await choiceManagers(),
+              }
+            ]).then((response) => {
+
+              db.query(
+                `
+                INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`,
+                [response.eFName, response.eLName, response.roleID, response.mgrID],
+                function (err, result, fields) {
+                  if (err) throw err;
+                  console.log(`\n\r Employee added`);
+                  init();
+                }
+              );
+          });
+
           break;
         case "Update an employee role":
-          console.log("switch");
-          break;
-        default:
+            inquirer
+              .prompt([
+                {
+                  type: "list",
+                  message: "\n\r Whose Role?",
+                  name: "eeToUpdate",
+                  choices: async () => choiceEEs(),
+                },
+                {
+                  type: "list",
+                  message: "\n\r What will the new role be?",
+                  name: "roleUpdate",
+                  choices: async () => choiceRoles(),
+                },
+              ])
+              .then((response) => {
+                db.query(
+                  `
+                UPDATE employee
+                SET role_id = ?
+                WHERE id = ?`,
+                  [response.roleUpdate,response.eeToUpdate],
+                  function (err, result, fields) {
+                    if (err) throw err;
+                    console.table(`\n\r Employee Role Updated`);
+                    init();
+                  }
+                );
+              });
+            break;
+          default:
           console.log("switch");
       }
     });
 }
 
 // Function call to initialize app
+
 init();
