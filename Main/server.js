@@ -1,38 +1,59 @@
 const inquirer = require("inquirer");
 // Import and require mysql2
 const mysql = require("mysql2");
-
+//Import and require dotenv
+require('dotenv').config();
 // Connect to database
-//TODO - hide credentials
 const db = mysql.createConnection(
   {
     host: "localhost",
     // MySQL username,
-    user: "root",
+    user: process.env.DB_USER,
     // TODO: Add MySQL password here
-    password: "",
-    database: "employer_db",
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
   },
   console.log(`Connected to the employer_db database.`)
 );
-
 //connection for async-await type functions
 const connection = mysql
   .createConnection({
     host: "localhost",
-    user: "root",
-    password: "",
-    database: "employer_db",
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
   })
   .promise();
-
+//draws welcome screen ascii art credit: patorjk.com
+function welcome() {
+  console.log(`_____________________________________________________________________________________`)
+  console.log(`                                                                                     `)
+  console.log(`                                                                                     `)
+  console.log(` ▄▀▀█▄▄▄▄  ▄▀▀▄ ▄▀▄  ▄▀▀▄▀▀▀▄  ▄▀▀▀▀▄    ▄▀▀▀▀▄   ▄▀▀▄ ▀▀▄  ▄▀▀█▄▄▄▄  ▄▀▀█▄▄▄▄           `)
+  console.log(`▐  ▄▀   ▐ █  █ ▀  █ █   █   █ █    █    █      █ █   ▀▄ ▄▀ ▐  ▄▀   ▐ ▐  ▄▀   ▐           `)
+  console.log(`  █▄▄▄▄▄  ▐  █    █ ▐  █▀▀▀▀  ▐    █    █      █ ▐     █     █▄▄▄▄▄    █▄▄▄▄▄            `)
+  console.log(`  █    ▌    █    █     █          █     ▀▄    ▄▀       █     █    ▌    █    ▌            `)
+  console.log(` ▄▀▄▄▄▄   ▄▀   ▄▀    ▄▀         ▄▀▄▄▄▄▄▄▀ ▀▀▀▀       ▄▀     ▄▀▄▄▄▄    ▄▀▄▄▄▄             `)
+  console.log(` █    ▐   █    █    █           █                    █      █    ▐    █    ▐             `)
+  console.log(` ▐        ▐    ▐    ▐           ▐                    ▐      ▐         ▐                  `)
+  console.log(`                         ▄▀▀▀█▀▀▄  ▄▀▀▄▀▀▀▄  ▄▀▀█▄   ▄▀▄▄▄▄   ▄▀▀▄ █  ▄▀▀█▄▄▄▄  ▄▀▀▄▀▀▀▄ `)
+  console.log(`                        █    █  ▐ █   █   █ ▐ ▄▀ ▀▄ █ █    ▌ █  █ ▄▀ ▐  ▄▀   ▐ █   █   █ `)
+  console.log(`                        ▐   █     ▐  █▀▀█▀    █▄▄▄█ ▐ █      ▐  █▀▄    █▄▄▄▄▄  ▐  █▀▀█▀  `)
+  console.log(`                           █       ▄▀    █   ▄▀   █   █        █   █   █    ▌   ▄▀    █  `)
+  console.log(`                         ▄▀       █     █   █   ▄▀   ▄▀▄▄▄▄▀ ▄▀   █   ▄▀▄▄▄▄   █     █   `)
+  console.log(`                        █         ▐     ▐   ▐   ▐   █     ▐  █    ▐   █    ▐   ▐     ▐   `)
+  console.log(`                        ▐                           ▐        ▐        ▐                  `)
+  console.log(`                                                                       Spooky Edition`)                                                                                                  
+  console.log(`                                                                                     `)
+  console.log(`_____________________________________________________________________________________`)
+  console.log(`                                                                                     `)
+  console.log(`                                                                                     `)                                                                                                   };                                                                        
 //async/await choices for 'what is the new ee's role?'
 const choiceRoles = async () => {
   const roleQuery = `SELECT id AS value, title AS name FROM role;`;
   const roles = await connection.query(roleQuery);
   return roles[0];
 };
-
 //async/await choices for 'what dept does role belong to'
 const choiceDepartments = async () => {
   const choiceDepartmentsQuery = `SELECT id AS value, name AS name FROM department;`;
@@ -49,7 +70,6 @@ const choiceManagers = async () => {
   console.log(mgrs[0]);
   return mgrs[0];
 };
-
 const choiceEEs = async () => {
   const eeQuery = `SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee;`;
   const ees = await connection.query(eeQuery);
@@ -253,5 +273,5 @@ function init() {
 }
 
 // Function call to initialize app
-
+welcome();
 init();
