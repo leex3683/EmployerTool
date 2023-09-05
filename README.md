@@ -2,9 +2,10 @@
   [<img src="https://img.shields.io/badge/License-MIT-yellow.svg">](https://opensource.org/licenses/MIT)
   # Employee Tracker
 
-  [Click here to watch a video demo](https://drive.google.com/file/d/1giFvWnv8VPxsxBc8RwfbqE--cBJo3g_L/view)
+ [Click here to watch a video demo](https://drive.google.com/file/d/1giFvWnv8VPxsxBc8RwfbqE--cBJo3g_L/view)
   
-[Or watch here](assets/DemoEmployeeTracker.webm)
+
+[DemoEmployeeTracker.webm](https://github.com/leex3683/EmployerTool/assets/132837134/9872536f-f698-469a-a4b0-95648e93beaf)
 
   ## Table Of Contents
   * [Description](#description)
