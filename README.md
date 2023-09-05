@@ -4,8 +4,8 @@
 
  [Click here to watch a video demo](https://drive.google.com/file/d/1giFvWnv8VPxsxBc8RwfbqE--cBJo3g_L/view)
   
+[Untitled_ Sep 4 2023 7_27 PM.webm](https://github.com/leex3683/EmployerTool/assets/132837134/8f8d4626-6e1d-4125-9cc0-57923b89f23e)
 
-[DemoEmployeeTracker.webm](https://github.com/leex3683/EmployerTool/assets/132837134/9872536f-f698-469a-a4b0-95648e93beaf)
 
   ## Table Of Contents
   * [Description](#description)
