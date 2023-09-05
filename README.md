@@ -4,9 +4,6 @@
 
   [Click here to watch a video demo](https://drive.google.com/file/d/1giFvWnv8VPxsxBc8RwfbqE--cBJo3g_L/view)
   
-<iframe src="https://drive.google.com/file/d/1giFvWnv8VPxsxBc8RwfbqE--cBJo3g_L/preview" width="640" height="480"></iframe>
-
-
   ## Table Of Contents
   * [Description](#description)
   * [Installation](#installation)
