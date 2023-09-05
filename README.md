@@ -4,6 +4,8 @@
 
   [Click here to watch a video demo](https://drive.google.com/file/d/1giFvWnv8VPxsxBc8RwfbqE--cBJo3g_L/view)
   
+[Or watch here](assets/DemoEmployeeTracker.webm)
+
   ## Table Of Contents
   * [Description](#description)
   * [Installation](#installation)
