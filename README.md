@@ -56,6 +56,7 @@
 
   ## Contributing
   Michael Lee
+  ascii art credit: patorjk.com
 
   ## Tests
   N/A
