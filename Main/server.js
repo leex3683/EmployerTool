@@ -59,7 +59,6 @@ const choiceDepartments = async () => {
   const choiceDepartmentsQuery = `SELECT id AS value, name AS name FROM department;`;
   const dpts = await connection.query(choiceDepartmentsQuery);
   // mgrs[0].push({ value: null, name: 'None'});
-  console.log(dpts[0]);
   return dpts[0];
 };
 //async/await choices for 'who does the new ee report to?'
@@ -67,13 +66,11 @@ const choiceManagers = async () => {
   const mgrQuery = `SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee;`;
   const mgrs = await connection.query(mgrQuery);
   mgrs[0].push({ value: null, name: 'None'});
-  console.log(mgrs[0]);
   return mgrs[0];
 };
 const choiceEEs = async () => {
   const eeQuery = `SELECT id AS value, CONCAT(first_name, " ", last_name) AS name FROM employee;`;
   const ees = await connection.query(eeQuery);
-  console.log(ees[0]);
   return ees[0];
 }
 
